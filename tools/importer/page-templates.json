@@ -1,0 +1,76 @@
+{
+  "templates": [
+    {
+      "name": "career",
+      "urls": [
+        "https://www.aumovio.com/en/career.html",
+        "https://www.aumovio.com/en/company.html",
+        "https://www.aumovio.com/en/solutions.html"
+      ],
+      "representativeUrl": "https://www.aumovio.com/en/career.html",
+      "description": "To be named in naming step",
+      "blocks": [
+        {
+          "name": "hero-banner",
+          "instances": [
+            ".stage.teaser"
+          ]
+        },
+        {
+          "name": "cards-teaser",
+          "instances": [
+            "#corporate_culture div.columncontrol:nth-of-type(2)",
+            "#what_we_do div.columncontrol.aumovio-bottom-spacing--big",
+            ".teasercards"
+          ]
+        },
+        {
+          "name": "columns-media",
+          "instances": [
+            ".contentteaser.teaser"
+          ]
+        }
+      ],
+      "urlPattern": "/en/*"
+    },
+    {
+      "name": "home",
+      "urls": [
+        "https://www.aumovio.com/en.html"
+      ],
+      "representativeUrl": "https://www.aumovio.com/en.html",
+      "description": "To be named in naming step",
+      "blocks": [
+        {
+          "name": "hero-banner",
+          "instances": [
+            ".stage.teaser",
+            ".bannerteaser.teaser"
+          ]
+        },
+        {
+          "name": "cards-teaser",
+          "instances": [
+            ".teasercards"
+          ]
+        },
+        {
+          "name": "tabs-events",
+          "instances": [
+            ".eventsteaser"
+          ]
+        },
+        {
+          "name": "columns-media",
+          "instances": [
+            "div.maincontainer.container.responsivegrid:nth-of-type(7) div.cmp-container > div.columncontrol"
+          ]
+        }
+      ],
+      "urlPattern": "/*"
+    }
+  ],
+  "metadata": {
+    "projectType": "xwalk"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "status": "success",
+  "url": "https://www.aumovio.com/en/solutions.html",
+  "path": "en/solutions",
+  "timestamp": "2026-09-08T01:00:22.074Z",
+  "title": "Solutions | AUMOVIO",
+  "template": "career",
+  "blocks": [
+    "hero-banner",
+    "cards-teaser",
+    "cards-teaser",
+    "cards-teaser",
+    "cards-teaser"
+  ]
+}

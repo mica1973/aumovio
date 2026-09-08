@@ -1,0 +1,155 @@
+/* Block: cards-teaser -- values extracted from aumovio.com/en computed styles */
+
+/* Grid: stacks on mobile, 3-up on desktop */
+.cards-teaser > ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+/* Card */
+.cards-teaser > ul > li {
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  background-color: var(--light-color); /* rgb(248, 248, 248) */
+}
+
+/* Image */
+.cards-teaser .cards-teaser-card-image {
+  line-height: 0;
+  margin-bottom: 24px;
+}
+
+.cards-teaser .cards-teaser-card-image picture {
+  display: block;
+}
+
+.cards-teaser > ul > li img {
+  width: 100%;
+  aspect-ratio: 122 / 59;
+  object-fit: cover;
+}
+
+/* Body -- grows to fill so the button aligns to the card bottom */
+.cards-teaser .cards-teaser-card-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+/* Category tag pill (newsroom) */
+.cards-teaser .cards-teaser-card-body p.cards-teaser-tag {
+  align-self: flex-start;
+  margin: 0 0 8px;
+  padding: 4px 12px;
+  border-radius: 2px;
+  background-color: #4827af;
+  color: #fff;
+  font-size: var(--body-font-size-m); /* 20px */
+  font-weight: 400;
+  line-height: 30px;
+}
+
+/* Title */
+.cards-teaser .cards-teaser-card-body h2 {
+  margin: 0 0 8px;
+  font-size: var(--heading-font-size-m); /* 24px desktop, 20px mobile */
+  font-weight: 400;
+  line-height: 1.35;
+}
+
+/* Description */
+.cards-teaser .cards-teaser-card-body p {
+  margin: 0 0 8px;
+  font-size: var(--body-font-size-m); /* 20px */
+  font-weight: 400;
+  line-height: 1.35;
+}
+
+/* "Learn more" -- pushed to the bottom of the card */
+.cards-teaser .cards-teaser-card-body .button-container {
+  margin: 16px 0 0;
+  margin-top: auto;
+  padding-top: 16px;
+}
+
+main .cards-teaser a.button:any-link {
+  display: block;
+  width: 100%;
+  padding: 12px 24px;
+  border-radius: 28px;
+  background-color: #ff4208;
+  color: #fff;
+  font-size: var(--body-font-size-m); /* 20px */
+  font-weight: 700;
+  line-height: 24px;
+  text-align: center;
+  text-decoration: none;
+}
+
+main .cards-teaser a.button:hover,
+main .cards-teaser a.button:focus {
+  background-color: #ff4208;
+  color: #fff;
+  text-decoration: none;
+}
+
+@media (width >= 900px) {
+  .cards-teaser > ul {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+  }
+}
+
+/*
+ * "simple" variant -- 4-up value/topic cards (career page).
+ * Detected in JS via <h3> card titles. Cards are borderless and
+ * transparent (no gray panel), images keep their natural ratio,
+ * and the "Learn more" CTA is an inline pill rather than full width.
+ */
+
+/* Card: no panel background, no padding */
+.cards-teaser-simple > ul > li {
+  padding: 0;
+  background-color: transparent;
+}
+
+/* Image keeps its authored aspect ratio (square for values, 16:9 for topics) */
+.cards-teaser-simple > ul > li img {
+  aspect-ratio: auto;
+  height: auto;
+}
+
+/* Title -- source: 24px / 32.4px (1.35), weight 400 */
+.cards-teaser-simple .cards-teaser-card-body h3 {
+  margin: 0 0 8px;
+  font-size: var(--heading-font-size-m); /* 24px desktop, 20px mobile */
+  font-weight: 400;
+  line-height: 1.35;
+}
+
+/* Description -- source: 20px / 30px (1.5), margin-bottom 16px */
+.cards-teaser-simple .cards-teaser-card-body p {
+  margin: 0 0 16px;
+  line-height: 1.5;
+}
+
+/* "Learn more" -- inline pill, auto width, left aligned (source width ~157px) */
+main .cards-teaser-simple a.button:any-link {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  width: auto;
+}
+
+@media (width >= 900px) {
+  /* Source grid: 4 columns, 40px row gap / 16px column gap */
+  .cards-teaser-simple > ul {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 40px 16px;
+  }
+}

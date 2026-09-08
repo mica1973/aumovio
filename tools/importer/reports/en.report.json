@@ -1,0 +1,17 @@
+{
+  "status": "success",
+  "url": "https://www.aumovio.com/en.html",
+  "path": "en",
+  "timestamp": "2026-09-07T23:14:23.555Z",
+  "title": "Homepage | AUMOVIO",
+  "template": "home",
+  "blocks": [
+    "hero-banner",
+    "hero-banner",
+    "hero-banner",
+    "cards-teaser",
+    "cards-teaser",
+    "tabs-events",
+    "columns-media"
+  ]
+}

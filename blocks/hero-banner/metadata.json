@@ -1,0 +1,41 @@
+{
+  "variantName": "hero-banner",
+  "baseBlock": "hero",
+  "version": "1.0.0",
+  "created": "2026-09-07T00:00:00.000Z",
+  "sourceContext": {
+    "originUrl": "https://www.aumovio.com/en.html",
+    "originPage": "AUMOVIO homepage",
+    "blockPosition": "top and mid-page"
+  },
+  "visualCharacteristics": {
+    "colorScheme": "light",
+    "density": "spacious",
+    "purpose": "hero",
+    "imagePattern": "large"
+  },
+  "contentPattern": {
+    "structure": "background image + heading + subheading + optional CTA",
+    "buttonCount": 1,
+    "imageCount": 1
+  },
+  "reuseGuidance": {
+    "suitableFor": [
+      "full-bleed key-visual page headers",
+      "mid-page promotional banners with overlay text",
+      "image-backed call-to-action banners"
+    ],
+    "notSuitableFor": [
+      "text-only intro sections",
+      "grids of repeating items"
+    ]
+  },
+  "usage": {
+    "pagesUsing": [
+      "/en",
+      "/en/career"
+    ],
+    "reuseCount": 2,
+    "lastUsed": "2026-09-08T00:42:14.816Z"
+  }
+}
