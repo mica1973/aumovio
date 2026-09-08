@@ -41,10 +41,24 @@ function applyImageSrc(img) {
  * @returns {Promise<Document|null>}
  */
 async function fetchFooterFragment() {
-  let resp = await fetch('/content/footer.plain.html');
-  if (!resp.ok) resp = await fetch('/footer.plain.html');
-  if (!resp.ok) return null;
-  const html = await resp.text();
+  // Resolve across hosts (see header.js). AEM author serves the fragment under
+  // codeBasePath (/content/AUMOVIO/footer.plain.html); locally at
+  // /content/footer.plain.html; published at the site root /footer.plain.html.
+  const base = window.hlx?.codeBasePath || '';
+  const candidates = [
+    `${base}/footer.plain.html`,
+    '/content/footer.plain.html',
+    '/footer.plain.html',
+  ];
+  let html = null;
+  // eslint-disable-next-line no-restricted-syntax
+  for (const url of candidates) {
+    /* eslint-disable no-await-in-loop */
+    const resp = await fetch(url);
+    if (resp.ok) { html = await resp.text(); break; }
+    /* eslint-enable no-await-in-loop */
+  }
+  if (html === null) return null;
   const doc = document.implementation.createHTMLDocument('footer');
   doc.body.innerHTML = html;
   return doc;

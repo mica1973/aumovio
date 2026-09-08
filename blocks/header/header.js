@@ -13,10 +13,26 @@ const isDesktop = window.matchMedia('(min-width: 900px)');
  * @returns {Promise<Document|null>}
  */
 async function fetchNavFragment() {
-  let resp = await fetch('/content/nav.plain.html');
-  if (!resp.ok) resp = await fetch('/nav.plain.html');
-  if (!resp.ok) return null;
-  const html = await resp.text();
+  // Resolve across hosts. On AEM author the code + content live under
+  // codeBasePath (e.g. /content/AUMOVIO), so the nav fragment is at
+  // `${codeBasePath}/nav.plain.html`. Locally codeBasePath is '' and the
+  // fragment is served at /content/nav.plain.html; on published EDS it's at
+  // the site root /nav.plain.html. Try the candidates in order.
+  const base = window.hlx?.codeBasePath || '';
+  const candidates = [
+    `${base}/nav.plain.html`,
+    '/content/nav.plain.html',
+    '/nav.plain.html',
+  ];
+  let html = null;
+  // eslint-disable-next-line no-restricted-syntax
+  for (const url of candidates) {
+    /* eslint-disable no-await-in-loop */
+    const resp = await fetch(url);
+    if (resp.ok) { html = await resp.text(); break; }
+    /* eslint-enable no-await-in-loop */
+  }
+  if (html === null) return null;
   const doc = document.implementation.createHTMLDocument('nav');
   doc.body.innerHTML = html;
   return doc;
