@@ -43,10 +43,15 @@ async function fetchNavFragment() {
  * @param {HTMLLIElement} li
  */
 function modelFromLi(li) {
-  const link = li.querySelector(':scope > a');
+  // The link is a direct child locally (`<li><a>…</a><ul>…</ul></li>`), but the
+  // xwalk md2jcr conversion wraps it in a <p> (`<li><p><a>…</a></p><ul>…</ul></li>`).
+  // Match both; read ONLY the link's own text (never li.textContent, which would
+  // include the entire subtree and produce a label like
+  // "Career Job openings Life at AUMOVIO …").
+  const link = li.querySelector(':scope > a, :scope > p > a');
   const subUl = li.querySelector(':scope > ul');
   return {
-    label: link ? link.textContent.trim() : (li.textContent || '').trim(),
+    label: link ? link.textContent.trim() : '',
     href: link ? link.getAttribute('href') : null,
     children: subUl ? [...subUl.children].filter((c) => c.tagName === 'LI').map(modelFromLi) : [],
   };
@@ -266,7 +271,9 @@ export default async function decorate(block) {
   // --- Primary nav ---
   const navSections = document.createElement('div');
   navSections.className = 'nav-sections';
-  const topUl = navSection?.querySelector(':scope > ul');
+  // Prefer a direct-child <ul>, but fall back to the first descendant <ul>:
+  // md2jcr may wrap the list in a richtext container on AEM.
+  const topUl = navSection?.querySelector(':scope > ul') || navSection?.querySelector('ul');
   const menuUl = document.createElement('ul');
   menuUl.className = 'nav-menu';
   if (topUl) {
