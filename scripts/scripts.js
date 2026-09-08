@@ -303,6 +303,22 @@ function buildAutoBlocks(main) {
   }
 }
 
+/**
+ * Removes empty data:image/svg+xml placeholder images (lazy-load spinners from
+ * the source's responsive-image elements). They resolve to no real asset,
+ * render broken, and log ERR_INVALID_URL. Injected after import, so this is
+ * the render-time chokepoint that catches them across all pages.
+ * @param {Element} main The main element
+ */
+function removeEmptyPlaceholderImages(main) {
+  main.querySelectorAll('img[src^="data:image/svg+xml"]').forEach((img) => {
+    const src = img.getAttribute('src') || '';
+    if (!src.includes(',') || src.trim() === 'data:image/svg+xml') {
+      (img.closest('picture') || img).remove();
+    }
+  });
+}
+
 function a11yLinks(main) {
   const links = main.querySelectorAll('a');
   links.forEach((link) => {
@@ -322,6 +338,7 @@ function a11yLinks(main) {
 // eslint-disable-next-line import/prefer-default-export
 export function decorateMain(main) {
   // hopefully forward compatible button decoration
+  removeEmptyPlaceholderImages(main);
   decorateButtons(main);
   decorateIcons(main);
   buildAutoBlocks(main);
@@ -343,6 +360,9 @@ async function loadEager(doc) {
   }
   const main = doc.querySelector('main');
   if (main) {
+    // Skip-to-content target: make <main> focusable so the header skip link works.
+    if (!main.id) main.id = 'main';
+    main.setAttribute('tabindex', '-1');
     decorateMain(main);
     document.body.classList.add('appear');
     await loadSection(main.querySelector('.section'), waitForFirstImage);

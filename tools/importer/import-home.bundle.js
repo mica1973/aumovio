@@ -74,18 +74,25 @@ var CustomImportScript = (() => {
 
   // tools/importer/parsers/cards-teaser.js
   function parse2(element, { document }) {
-    const cards = Array.from(element.querySelectorAll("article.aumovio-card-teasers__card"));
+    let cards = Array.from(element.querySelectorAll("article.aumovio-card-teasers__card"));
+    if (cards.length === 0) {
+      cards = Array.from(element.querySelectorAll(".aumovio-flex-1")).filter((c) => c.querySelector(":scope > .cmp-container"));
+    }
     if (cards.length === 0) {
       element.replaceWith(...element.childNodes);
       return;
     }
     const cells = [];
     cards.forEach((card) => {
-      const image = card.querySelector(".aumovio-card-teasers__media img.aumovio-card-teasers__img, .aumovio-card-teasers__figure img, .aumovio-card-teasers__media img");
+      const image = card.querySelector(
+        '.aumovio-card-teasers__media img.aumovio-card-teasers__img, .aumovio-card-teasers__figure img:not([src^="data:"]), .responsiveimage picture img:not([src^="data:"]), picture img:not([src^="data:"])'
+      );
       const imageCell = [document.createComment(" field:image ")];
       if (image) imageCell.push(image);
       const textCell = [document.createComment(" field:text ")];
-      const tagNodes = card.querySelectorAll(".aumovio-card-teasers__figure--tags .aumovio-text--tag, .aumovio-tag--category .aumovio-text--tag");
+      const tagNodes = card.querySelectorAll(
+        ".aumovio-card-teasers__figure--tags .aumovio-text--tag, .aumovio-tag--category .aumovio-text--tag"
+      );
       const seenTags = /* @__PURE__ */ new Set();
       tagNodes.forEach((tag) => {
         const label = tag.textContent.trim();
@@ -96,11 +103,24 @@ var CustomImportScript = (() => {
           textCell.push(tagPara);
         }
       });
-      const heading = card.querySelector(".aumovio-card-teasers__content .aumovio-card-teasers__heading, .aumovio-card-teasers__content h2, .aumovio-card-teasers__content h3");
+      const heading = card.querySelector(
+        ".aumovio-card-teasers__content .aumovio-card-teasers__heading, .aumovio-card-teasers__content h2, .aumovio-card-teasers__content h3, .headline.title h3, .headline h3, .aumovio-headline h3"
+      );
       if (heading) textCell.push(heading);
-      const description = card.querySelector(".aumovio-card-teasers__content .aumovio-card-teasers__para, .aumovio-card-teasers__content p");
-      if (description) textCell.push(description);
-      const cta = card.querySelector(".aumovio-card-teasers__content a.aumovio-button, .aumovio-card-teasers__content a[href]");
+      const descNodes = card.querySelectorAll(
+        ".aumovio-card-teasers__content .aumovio-card-teasers__para, .aumovio-card-teasers__content > p, .text .cmp-text p, .text p"
+      );
+      const seenDesc = /* @__PURE__ */ new Set();
+      descNodes.forEach((p) => {
+        const txt = p.textContent.trim();
+        if (txt && !seenDesc.has(txt)) {
+          seenDesc.add(txt);
+          textCell.push(p);
+        }
+      });
+      const cta = card.querySelector(
+        ".aumovio-card-teasers__content a.aumovio-button, .aumovio-card-teasers__content a[href], .button a[href], a.aumovio-button[href]"
+      );
       if (cta) textCell.push(cta);
       cells.push([imageCell, textCell]);
     });
@@ -139,7 +159,15 @@ var CustomImportScript = (() => {
 
   // tools/importer/parsers/columns-media.js
   function parse4(element, { document }) {
-    const columns = Array.from(element.querySelectorAll(":scope > .aumovio-flex > .aumovio-flex-1"));
+    let columns = Array.from(element.querySelectorAll(":scope > .aumovio-flex > .aumovio-flex-1"));
+    if (columns.length === 0) {
+      const teaser = element.querySelector("section.aumovio-content-teaser, .aumovio-content-teaser");
+      if (teaser) {
+        columns = Array.from(teaser.querySelectorAll(
+          ":scope > .aumovio-content-teaser__figure, :scope > .aumovio-content-teaser__content"
+        ));
+      }
+    }
     if (columns.length === 0) {
       element.replaceWith(...element.childNodes);
       return;
@@ -149,11 +177,24 @@ var CustomImportScript = (() => {
       const cellContent = [];
       const img = col.querySelector('picture img:not([src^="data:"])');
       if (img) cellContent.push(img);
-      const paragraphs = Array.from(col.querySelectorAll(".cmp-text p, .text p"));
+      const heading = col.querySelector(
+        ".aumovio-content-teaser__heading h1, .aumovio-content-teaser__heading h2, .aumovio-content-teaser__heading h3, .aumovio-content-teaser__heading h4"
+      );
+      if (heading) cellContent.push(heading);
+      const paragraphs = Array.from(col.querySelectorAll(
+        ".cmp-text p, .text p, .aumovio-content-teaser__para, p.aumovio-content-teaser__para"
+      ));
+      const seen = /* @__PURE__ */ new Set();
       paragraphs.forEach((p) => {
-        if (p.textContent.trim()) cellContent.push(p);
+        const txt = p.textContent.trim();
+        if (txt && !seen.has(txt)) {
+          seen.add(txt);
+          cellContent.push(p);
+        }
       });
-      const cta = col.querySelector(".button a[href], a.aumovio-button[href]");
+      const cta = col.querySelector(
+        ".button a[href], .aumovio-content-teaser__col a[href], a.aumovio-button[href]"
+      );
       if (cta && cta.textContent.trim()) cellContent.push(cta);
       cellContent.length ? row.push(cellContent) : row.push("");
     });
@@ -164,12 +205,37 @@ var CustomImportScript = (() => {
 
   // tools/importer/transformers/aumovio-cleanup.js
   var TransformHook = { beforeTransform: "beforeTransform", afterTransform: "afterTransform" };
+  function removeSpaComments(root) {
+    const COMMENT_NODE = 8;
+    const isFieldHint = (text) => text.startsWith("field:");
+    const visit = (node) => {
+      const children = Array.from(node.childNodes || []);
+      children.forEach((child) => {
+        if (child.nodeType === COMMENT_NODE) {
+          const text = (child.nodeValue || "").trim();
+          if (!isFieldHint(text)) {
+            child.remove();
+          }
+        } else if (child.nodeType === 1) {
+          visit(child);
+        }
+      });
+    };
+    visit(root);
+  }
   function transform(hookName, element, payload) {
     if (hookName === TransformHook.beforeTransform) {
       WebImporter.DOMUtils.remove(element, ["#cmpwrapper"]);
+      removeSpaComments(element);
       if (element.style && element.style.overflow === "hidden") {
         element.style.overflow = "scroll";
       }
+      element.querySelectorAll('img[src^="data:image/svg+xml"]').forEach((img) => {
+        const src = img.getAttribute("src") || "";
+        if (!src.includes(",") || src.trim() === "data:image/svg+xml") {
+          (img.closest("picture") || img).remove();
+        }
+      });
     }
     if (hookName === TransformHook.afterTransform) {
       WebImporter.DOMUtils.remove(element, [
@@ -182,6 +248,13 @@ var CustomImportScript = (() => {
         "iframe"
         // hidden "Intentionally hidden, please ignore" iframes
       ]);
+      element.querySelectorAll('img[src^="data:image/svg+xml"]').forEach((img) => {
+        const src = img.getAttribute("src") || "";
+        if (!src.includes(",") || src.trim() === "data:image/svg+xml") {
+          (img.closest("picture") || img).remove();
+        }
+      });
+      removeSpaComments(element);
     }
   }
 

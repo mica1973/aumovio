@@ -327,5 +327,11 @@ export default async function decorate(block) {
   const navWrapper = document.createElement('div');
   navWrapper.className = 'nav-wrapper';
   navWrapper.append(nav);
-  block.append(navWrapper);
+
+  // Skip-to-content link (first focusable element, before the nav)
+  const skip = document.createElement('a');
+  skip.className = 'skip-link visually-hidden';
+  skip.href = '#main';
+  skip.textContent = 'Skip to main content';
+  block.append(skip, navWrapper);
 }

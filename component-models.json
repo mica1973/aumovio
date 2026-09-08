@@ -164,7 +164,7 @@
     "id": "card",
     "fields": [
       {
-        "component": "reference",
+        "component": "richtext",
         "valueType": "string",
         "name": "image",
         "label": "Image",
@@ -323,7 +323,7 @@
     "id": "hero-banner",
     "fields": [
       {
-        "component": "reference",
+        "component": "richtext",
         "valueType": "string",
         "name": "image",
         "label": "Image",
@@ -622,7 +622,7 @@
         ]
       },
       {
-        "component": "reference",
+        "component": "richtext",
         "valueType": "string",
         "name": "content_image",
         "label": "Image",

@@ -176,12 +176,37 @@ var CustomImportScript = (() => {
 
   // tools/importer/transformers/aumovio-cleanup.js
   var TransformHook = { beforeTransform: "beforeTransform", afterTransform: "afterTransform" };
+  function removeSpaComments(root) {
+    const COMMENT_NODE = 8;
+    const isFieldHint = (text) => text.startsWith("field:");
+    const visit = (node) => {
+      const children = Array.from(node.childNodes || []);
+      children.forEach((child) => {
+        if (child.nodeType === COMMENT_NODE) {
+          const text = (child.nodeValue || "").trim();
+          if (!isFieldHint(text)) {
+            child.remove();
+          }
+        } else if (child.nodeType === 1) {
+          visit(child);
+        }
+      });
+    };
+    visit(root);
+  }
   function transform(hookName, element, payload) {
     if (hookName === TransformHook.beforeTransform) {
       WebImporter.DOMUtils.remove(element, ["#cmpwrapper"]);
+      removeSpaComments(element);
       if (element.style && element.style.overflow === "hidden") {
         element.style.overflow = "scroll";
       }
+      element.querySelectorAll('img[src^="data:image/svg+xml"]').forEach((img) => {
+        const src = img.getAttribute("src") || "";
+        if (!src.includes(",") || src.trim() === "data:image/svg+xml") {
+          (img.closest("picture") || img).remove();
+        }
+      });
     }
     if (hookName === TransformHook.afterTransform) {
       WebImporter.DOMUtils.remove(element, [
@@ -194,6 +219,13 @@ var CustomImportScript = (() => {
         "iframe"
         // hidden "Intentionally hidden, please ignore" iframes
       ]);
+      element.querySelectorAll('img[src^="data:image/svg+xml"]').forEach((img) => {
+        const src = img.getAttribute("src") || "";
+        if (!src.includes(",") || src.trim() === "data:image/svg+xml") {
+          (img.closest("picture") || img).remove();
+        }
+      });
+      removeSpaComments(element);
     }
   }
 
