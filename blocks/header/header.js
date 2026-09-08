@@ -7,6 +7,29 @@
 
 const isDesktop = window.matchMedia('(min-width: 900px)');
 
+// AEM DAM folder where the nav/footer images are uploaded for this site.
+const AEM_ASSET_BASE = '/content/dam/aumovio/images/';
+
+/**
+ * Resolve a fragment image reference to a path that works in the current host.
+ * Fragments store images relatively (e.g. `images/aumovio-logo.svg`) so they
+ * render on the local preview regardless of page depth; on the AEM author/
+ * published host the same asset lives in the DAM. Rewrite accordingly.
+ * @param {string} src the raw src from the fragment
+ * @returns {string}
+ */
+function resolveImageSrc(src) {
+  if (!src) return src;
+  // Absolute or external — leave as-is.
+  if (/^(https?:)?\/\//.test(src) || src.startsWith('/')) return src;
+  const file = src.replace(/^images\//, '');
+  const host = window.location.hostname;
+  const isLocal = host === 'localhost' || host === '127.0.0.1';
+  // Local preview: root-absolute so it resolves at any page depth.
+  // AEM (author/publish): the uploaded DAM path.
+  return isLocal ? `/${src}` : `${AEM_ASSET_BASE}${file}`;
+}
+
 /**
  * Fetch the nav fragment, metadata-independent: /content first (localhost),
  * then root (DA/EDS production).
@@ -229,7 +252,7 @@ export default async function decorate(block) {
   brandLink.setAttribute('aria-label', 'AUMOVIO - Homepage');
   if (logoImg) {
     const img = document.createElement('img');
-    img.src = logoImg.getAttribute('src');
+    img.src = resolveImageSrc(logoImg.getAttribute('src'));
     img.alt = logoImg.getAttribute('alt') || 'AUMOVIO';
     brandLink.append(img);
   }

@@ -2,6 +2,26 @@
 // link columns, legal + copyright) and decorates it with section classes.
 // All copy/links/images come from content/footer.plain.html.
 
+// AEM DAM folder where the nav/footer images are uploaded for this site.
+const AEM_ASSET_BASE = '/content/dam/aumovio/images/';
+
+/**
+ * Resolve a fragment image reference to a path that works in the current host.
+ * Fragments store images relatively (e.g. `images/social-facebook.svg`) so they
+ * render on the local preview at any page depth; on the AEM host the same asset
+ * lives in the DAM. Rewrite accordingly.
+ * @param {string} src the raw src from the fragment
+ * @returns {string}
+ */
+function resolveImageSrc(src) {
+  if (!src) return src;
+  if (/^(https?:)?\/\//.test(src) || src.startsWith('/')) return src;
+  const file = src.replace(/^images\//, '');
+  const host = window.location.hostname;
+  const isLocal = host === 'localhost' || host === '127.0.0.1';
+  return isLocal ? `/${src}` : `${AEM_ASSET_BASE}${file}`;
+}
+
 /**
  * Fetch the footer fragment, metadata-independent: /content first (localhost),
  * then root (DA/EDS production).
@@ -34,6 +54,11 @@ export default async function decorate(block) {
   sections.forEach((section, i) => {
     if (classNames[i]) section.classList.add(classNames[i]);
     footer.append(section);
+  });
+
+  // Rewrite fragment image refs (logo/social icons) for the current host.
+  footer.querySelectorAll('img[src]').forEach((img) => {
+    img.setAttribute('src', resolveImageSrc(img.getAttribute('src')));
   });
 
   // Social row: label paragraph + icon list
