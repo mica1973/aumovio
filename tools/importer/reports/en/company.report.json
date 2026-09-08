@@ -1,0 +1,12 @@
+{
+  "status": "success",
+  "url": "https://www.aumovio.com/en/company.html",
+  "path": "en/company",
+  "timestamp": "2026-09-08T01:00:17.140Z",
+  "title": "Company | AUMOVIO",
+  "template": "career",
+  "blocks": [
+    "hero-banner",
+    "cards-teaser"
+  ]
+}

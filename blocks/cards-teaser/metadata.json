@@ -1,0 +1,41 @@
+{
+  "variantName": "cards-teaser",
+  "baseBlock": "cards",
+  "version": "1.0.0",
+  "created": "2026-09-07T00:00:00.000Z",
+  "sourceContext": {
+    "originUrl": "https://www.aumovio.com/en.html",
+    "originPage": "AUMOVIO homepage",
+    "blockPosition": "middle"
+  },
+  "visualCharacteristics": {
+    "colorScheme": "light",
+    "density": "spacious",
+    "purpose": "teaser",
+    "imagePattern": "large"
+  },
+  "contentPattern": {
+    "structure": "image + optional category tag + heading + description + CTA link",
+    "buttonCount": 1,
+    "imageCount": 1
+  },
+  "reuseGuidance": {
+    "suitableFor": [
+      "solution/product teaser grids",
+      "news/article teaser listings",
+      "3-up teaser rows or carousels of image cards"
+    ],
+    "notSuitableFor": [
+      "text-only card lists (use a no-image cards variant)",
+      "side-by-side comparison layouts (use columns)"
+    ]
+  },
+  "usage": {
+    "pagesUsing": [
+      "/en",
+      "/en/career"
+    ],
+    "reuseCount": 2,
+    "lastUsed": "2026-09-08T00:42:14.816Z"
+  }
+}

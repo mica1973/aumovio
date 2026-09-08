@@ -1,0 +1,142 @@
+/* Block: hero-banner
+ * Two shapes share one block:
+ *   - STAGE  (contains <h1>): full-bleed key visual with a translucent white
+ *     text card centered near the top (heading + subheading, no CTA).
+ *   - BANNER (no <h1>): full-bleed image with a small opaque white card
+ *     (eyebrow + description + orange "Learn more" CTA) aligned to the
+ *     content column and vertically centered.
+ * Values extracted from source computed styles (see migration-work/hero-banner-extracted.css).
+ */
+
+/* Break the block out of the 1200px section wrapper -> full-bleed */
+main > .section > .hero-banner-wrapper {
+  max-width: none;
+  padding: 0;
+}
+
+.hero-banner.block {
+  position: relative;
+  margin: 0;
+}
+
+/* Image row: fills the block, image sets the height */
+.hero-banner > div:first-child {
+  margin: 0;
+}
+
+.hero-banner > div:first-child picture {
+  display: block;
+  line-height: 0;
+}
+
+.hero-banner > div:first-child img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+/* ---- Text card: base (mobile) = opaque white card stacked with the image ---- */
+.hero-banner > div:last-child {
+  margin: 0;
+  background: rgb(255 255 255);
+  padding: 24px;
+}
+
+.hero-banner > div:last-child > div {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.hero-banner h1 {
+  margin: 0;
+  color: rgb(0 0 0);
+}
+
+.hero-banner h3 {
+  margin: 0;
+  font-size: var(--heading-font-size-l);
+  line-height: 1.2;
+  color: rgb(0 0 0);
+}
+
+.hero-banner h4 {
+  margin: 0;
+  font-size: var(--heading-font-size-m);
+  line-height: 1.2;
+  color: rgb(0 0 0);
+}
+
+.hero-banner p {
+  margin: 0;
+  font-size: var(--body-font-size-xs);
+  line-height: 1.15;
+  color: rgb(120 120 120);
+}
+
+/* Orange pill CTA (banner shape) -- overrides the global underlined button reset */
+.hero-banner .button-container {
+  margin: 0;
+  display: block;
+}
+
+.hero-banner a.button:any-link {
+  display: inline-flex;
+  align-items: center;
+  background: rgb(255 66 8);
+  color: rgb(255 255 255);
+  border: none;
+  border-radius: 28px;
+  padding: 12px 24px;
+  font-size: var(--body-font-size-m);
+  font-weight: 700;
+  line-height: 24px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.hero-banner a.button:hover,
+.hero-banner a.button:focus {
+  background: rgb(255 66 8);
+  color: rgb(255 255 255);
+  text-decoration: none;
+}
+
+/* ---- STAGE shape (has h1): translucent centered card, no CTA ---- */
+.hero-banner:has(h1) > div:last-child {
+  background: rgb(255 255 255 / 80%);
+}
+
+@media (width >= 900px) {
+  /* Common: text card becomes an absolute overlay on the image */
+  .hero-banner > div:last-child {
+    position: absolute;
+    z-index: 1;
+  }
+
+  /* STAGE: translucent card centered horizontally, near the top */
+  .hero-banner:has(h1) > div:last-child {
+    top: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(940px, calc(100% - 64px));
+    padding: 20px 24px;
+  }
+
+  .hero-banner:has(h1) > div:last-child > div {
+    gap: 8px;
+  }
+
+  /* BANNER: opaque card aligned to the content column, vertically centered.
+     Mutually exclusive with the :has(h1) stage rule above, so specificity
+     ordering is not a real cascade concern here. */
+  /* stylelint-disable-next-line no-descending-specificity */
+  .hero-banner:not(:has(h1)) > div:last-child {
+    top: 50%;
+    transform: translateY(-50%);
+    left: max(32px, calc((100% - 1136px) / 2 + 32px));
+    width: 368px;
+  }
+}
