@@ -16,16 +16,18 @@ const AEM_ASSET_BASE = '/content/dam/aumovio/images/';
 function applyImageSrc(img) {
   const raw = img.getAttribute('src');
   if (!raw || /^(https?:)?\/\//.test(raw)) return;
-  const file = raw.replace(/^\/?(?:content\/)?images\//, '').replace(/^\//, '');
+  // Use just the filename so we never double-prefix a path. The raw src may be
+  // a relative ref (`images/icon.svg`) locally, or already a full DAM path
+  // (`/content/dam/aumovio/images/icon.svg`) after the AEM upload rewrite.
+  const file = raw.split('/').pop();
   const relPath = `/images/${file}`;
   const damPath = `${AEM_ASSET_BASE}${file}`;
-  // On the AEM author host (Universal Editor) assets come from the DAM and a
-  // missing /images/ request may not fire a clean error event — use the DAM
-  // path up front there; elsewhere use the root-absolute relative path. Swap
-  // to the other candidate on error so it self-heals on any host.
-  const onAem = /\.adobeaemcloud\.com$/.test(window.location.hostname);
-  const primary = onAem ? damPath : relPath;
-  const fallback = onAem ? relPath : damPath;
+  // If the src already points into the DAM (AEM), keep the DAM path; otherwise
+  // use the root-absolute relative path. Swap to the other on error so it
+  // self-heals on any host.
+  const isDam = raw.includes('/content/dam/') || /\.adobeaemcloud\.com$/.test(window.location.hostname);
+  const primary = isDam ? damPath : relPath;
+  const fallback = isDam ? relPath : damPath;
   img.addEventListener('error', function onErr() {
     img.removeEventListener('error', onErr);
     if (img.getAttribute('src') !== fallback) img.setAttribute('src', fallback);
