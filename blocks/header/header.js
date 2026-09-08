@@ -7,39 +7,6 @@
 
 const isDesktop = window.matchMedia('(min-width: 900px)');
 
-// AEM DAM folder where the nav/footer images are uploaded for this site.
-const AEM_ASSET_BASE = '/content/dam/aumovio/images/';
-
-/**
- * Resolve a fragment image reference to a path that works in the current host.
- * Fragments store images relatively (e.g. `images/aumovio-logo.svg`) so they
- * render on the local preview regardless of page depth; on the AEM author/
- * published host the same asset lives in the DAM. Rewrite accordingly.
- * @param {string} src the raw src from the fragment
- * @returns {string}
- */
-function applyImageSrc(img) {
-  const raw = img.getAttribute('src');
-  if (!raw || /^(https?:)?\/\//.test(raw)) return;
-  // Use just the filename so we never double-prefix a path. The raw src may be
-  // a relative ref (`images/logo.svg`) locally, or already a full DAM path
-  // (`/content/dam/aumovio/images/logo.svg`) after the AEM upload rewrite.
-  const file = raw.split('/').pop();
-  const relPath = `/images/${file}`;
-  const damPath = `${AEM_ASSET_BASE}${file}`;
-  // If the src already points into the DAM (AEM), keep the DAM path; otherwise
-  // use the root-absolute relative path (localhost/preview/published). Swap to
-  // the other candidate on load error so it self-heals on any host.
-  const isDam = raw.includes('/content/dam/') || /\.adobeaemcloud\.com$/.test(window.location.hostname);
-  const primary = isDam ? damPath : relPath;
-  const fallback = isDam ? relPath : damPath;
-  img.addEventListener('error', function onErr() {
-    img.removeEventListener('error', onErr);
-    if (img.getAttribute('src') !== fallback) img.setAttribute('src', fallback);
-  });
-  img.setAttribute('src', primary);
-}
-
 /**
  * Fetch the nav fragment, metadata-independent: /content first (localhost),
  * then root (DA/EDS production).
@@ -244,29 +211,32 @@ export default async function decorate(block) {
   block.textContent = '';
   if (!doc) return;
 
+  // Fragment sections: [0] nav tree, [1] tools (search + language). The logo is
+  // NOT in the fragment — it is code-owned chrome rendered below from /icons/.
   const sections = [...doc.body.children].filter((el) => el.tagName === 'DIV');
-  const brandSection = sections[0];
-  const navSection = sections[1];
-  const toolsSection = sections[2];
+  const navSection = sections[0];
+  const toolsSection = sections[1];
 
   const nav = document.createElement('nav');
   nav.id = 'nav';
   nav.setAttribute('aria-expanded', 'false');
 
   // --- Brand / logo ---
+  // The logo is code-owned brand chrome served from the git-deployed /icons/
+  // folder — NOT from the nav content fragment. Authoring it as fragment content
+  // caused md2jcr (xwalk) to remodel the image-only link into an empty Button and
+  // drop the <img>. Serving it from /icons/ works identically on localhost, AEM
+  // author, and published, with no DAM/path/casing concerns.
   const brand = document.createElement('div');
   brand.className = 'nav-brand';
-  const logoImg = brandSection?.querySelector('img');
   const brandLink = document.createElement('a');
   brandLink.href = '/';
   brandLink.setAttribute('aria-label', 'AUMOVIO - Homepage');
-  if (logoImg) {
-    const img = document.createElement('img');
-    img.alt = logoImg.getAttribute('alt') || 'AUMOVIO';
-    img.setAttribute('src', logoImg.getAttribute('src'));
-    applyImageSrc(img);
-    brandLink.append(img);
-  }
+  const img = document.createElement('img');
+  img.src = `${window.hlx?.codeBasePath || ''}/icons/aumovio-logo.svg`;
+  img.alt = 'AUMOVIO';
+  img.width = 200;
+  brandLink.append(img);
   brand.append(brandLink);
 
   // --- Hamburger (mobile) ---
