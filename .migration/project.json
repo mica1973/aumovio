@@ -1,0 +1,15 @@
+{
+  "type": "xwalk",
+  "sites": {
+    "aumovio": {
+      "previewOrg": "mica1973",
+      "previewSite": "aumovio",
+      "contentHostUrl": "author-p129578-e1265868.adobeaemcloud.com",
+      "aemSitePath": "/content/AUMOVIO",
+      "aemAssetsFolderPath": "/content/dam/AUMOVIO",
+      "aemSiteName": "AUMOVIO",
+      "aemSiteTitle": "aumovio",
+      "libraryUrl": "https://main--sta-xwalk-boilerplate--aemysites.aem.page/tools/sidekick/library.json"
+    }
+  }
+}

@@ -1,0 +1,16 @@
+:root {
+  --heading-font-family: "Aumovio Screen", sans-serif;
+  --body-font-family: "Aumovio Screen", sans-serif;
+  --background-color: #fff;
+  --text-color: #000;
+  --link-color: #000;
+  --link-hover-color: #000;
+  --section-padding: 64px;
+  --nav-height: 80px;
+  --heading-size-xxl: 80px;
+  --heading-size-xl: 56px;
+  --heading-size-l: 32px;
+  --heading-size-m: 24px;
+  --heading-size-s: 18px;
+  --heading-size-xs: 16px;
+}

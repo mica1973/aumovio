@@ -1,0 +1,41 @@
+{
+  "variantName": "columns-media",
+  "baseBlock": "columns",
+  "version": "1.0.0",
+  "created": "2026-09-07T00:00:00.000Z",
+  "sourceContext": {
+    "originUrl": "https://www.aumovio.com/en.html",
+    "originPage": "AUMOVIO homepage",
+    "blockPosition": "middle"
+  },
+  "visualCharacteristics": {
+    "colorScheme": "light",
+    "density": "spacious",
+    "purpose": "feature",
+    "imagePattern": "large"
+  },
+  "contentPattern": {
+    "structure": "two columns: image | paragraph text + CTA link",
+    "buttonCount": 1,
+    "imageCount": 1
+  },
+  "reuseGuidance": {
+    "suitableFor": [
+      "image-beside-text feature sections",
+      "career/promo sections with a single image and descriptive copy",
+      "two-column informational layouts"
+    ],
+    "notSuitableFor": [
+      "grids of repeating distinct items (use cards)",
+      "full-bleed image banners (use hero)"
+    ]
+  },
+  "usage": {
+    "pagesUsing": [
+      "/en",
+      "/en/career"
+    ],
+    "reuseCount": 2,
+    "lastUsed": "2026-09-08T00:42:14.816Z"
+  }
+}

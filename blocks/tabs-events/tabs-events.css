@@ -1,0 +1,148 @@
+/* ===== Tab list ===== */
+.tabs-events .tabs-events-list {
+  display: flex;
+  gap: 0;
+  max-width: 100%;
+  margin: 0 0 24px;
+  border-bottom: 1px solid rgb(220 220 220);
+  overflow-x: auto;
+}
+
+.tabs-events .tabs-events-list button {
+  flex: 0 0 auto;
+  margin: 0;
+  border: none;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  padding: 4px 16px;
+  background-color: transparent;
+  color: var(--text-color);
+  font-family: var(--body-font-family);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 24px;
+  text-align: center;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.tabs-events .tabs-events-list button p {
+  margin: 0;
+}
+
+.tabs-events .tabs-events-list button[aria-selected='true'] {
+  color: rgb(255 66 8); /* AUMOVIO orange */
+  border-bottom-color: rgb(255 66 8);
+  cursor: default;
+}
+
+/* ===== Panels ===== */
+.tabs-events .tabs-events-panel {
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.tabs-events .tabs-events-panel[aria-hidden='true'] {
+  display: none;
+}
+
+/* ===== Event cards grid ===== */
+.tabs-events .tabs-events-cards {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tabs-events .tabs-events-cards > li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* card (the link) */
+.tabs-events .tabs-events-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 16px;
+  background-color: var(--light-color);
+  color: var(--text-color);
+  text-decoration: none;
+}
+
+.tabs-events .tabs-events-card:hover {
+  text-decoration: none;
+}
+
+/* media */
+.tabs-events .tabs-events-card-media {
+  margin: 0 0 16px;
+  overflow: hidden;
+}
+
+.tabs-events .tabs-events-card-media picture {
+  display: block;
+}
+
+.tabs-events .tabs-events-card-media img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 1;
+  object-fit: cover;
+}
+
+/* body */
+.tabs-events .tabs-events-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* date + location row */
+.tabs-events .tabs-events-card-header {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.tabs-events .tabs-events-card-date,
+.tabs-events .tabs-events-card-location {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 18.4px;
+  color: rgb(72 39 175); /* purple */
+}
+
+.tabs-events .tabs-events-card-location {
+  text-align: right;
+}
+
+/* title */
+.tabs-events .tabs-events-card h4 {
+  margin: 0;
+  font-size: var(--heading-font-size-l); /* 24px */
+  font-weight: 400;
+  line-height: 1.35;
+  color: var(--text-color);
+}
+
+/* ===== Responsive ===== */
+@media (width >= 600px) {
+  .tabs-events .tabs-events-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (width >= 900px) {
+  .tabs-events .tabs-events-cards {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

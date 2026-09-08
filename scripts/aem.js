@@ -302,6 +302,12 @@ function createOptimizedPicture(
   eager = false,
   breakpoints = [{ media: '(min-width: 600px)', width: '2000' }, { width: '750' }],
 ) {
+  // --- BEGIN DM dispatch (excat-generated) ---
+  if (typeof window.__dmRender__ === 'function') {
+    const dmPicture = window.__dmRender__(src, alt);
+    if (dmPicture) return dmPicture;
+  }
+  // --- END DM dispatch (excat-generated) ---
   const url = new URL(src, window.location.href);
   const picture = document.createElement('picture');
   const { pathname } = url;
@@ -640,9 +646,15 @@ async function loadFooter(footer) {
  */
 async function waitForFirstImage(section) {
   const lcpCandidate = section.querySelector('img');
+  // Prioritise the LCP candidate unconditionally. The DM/Scene7 auto-block
+  // rebuilds hero images with loading="lazy"; without this override a cached
+  // (already-complete) hero would keep lazy + no fetchpriority, hurting LCP.
+  if (lcpCandidate) {
+    lcpCandidate.setAttribute('loading', 'eager');
+    lcpCandidate.setAttribute('fetchpriority', 'high');
+  }
   await new Promise((resolve) => {
     if (lcpCandidate && !lcpCandidate.complete) {
-      lcpCandidate.setAttribute('loading', 'eager');
       lcpCandidate.addEventListener('load', resolve);
       lcpCandidate.addEventListener('error', resolve);
     } else {

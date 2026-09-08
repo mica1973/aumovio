@@ -11,6 +11,10 @@
     "build:json:models": "merge-json-cli -i \"models/_component-models.json\" -o \"component-models.json\"",
     "build:json:definitions": "merge-json-cli -i \"models/_component-definition.json\" -o \"component-definition.json\"",
     "build:json:filters": "merge-json-cli -i \"models/_component-filters.json\" -o \"component-filters.json\"",
+    "clean:content": "node tools/importer/strip-leaked-comments.mjs",
+    "import": "node tools/importer/import-and-clean.mjs",
+    "import:home": "node tools/importer/import-and-clean.mjs --import-script tools/importer/import-home.bundle.js --urls tools/importer/urls-home.txt",
+    "import:career": "node tools/importer/import-and-clean.mjs --import-script tools/importer/import-career.bundle.js --urls tools/importer/urls-career.txt",
     "prepare": "husky"
   },
   "repository": {

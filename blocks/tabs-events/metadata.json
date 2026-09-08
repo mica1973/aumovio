@@ -1,0 +1,38 @@
+{
+  "variantName": "tabs-events",
+  "baseBlock": "tabs",
+  "version": "1.0.0",
+  "created": "2026-09-07T00:00:00.000Z",
+  "sourceContext": {
+    "originUrl": "https://www.aumovio.com/en.html",
+    "originPage": "AUMOVIO homepage",
+    "blockPosition": "middle"
+  },
+  "visualCharacteristics": {
+    "colorScheme": "light",
+    "density": "spacious",
+    "purpose": "events",
+    "imagePattern": "large"
+  },
+  "contentPattern": {
+    "structure": "tab labels (Upcoming/Past) + tab panels containing event teaser listings",
+    "buttonCount": 0,
+    "imageCount": 0,
+    "tabCount": 2
+  },
+  "reuseGuidance": {
+    "suitableFor": [
+      "event listings split by Upcoming/Past",
+      "any content that groups teasers under a small set of switchable labels"
+    ],
+    "notSuitableFor": [
+      "FAQ-style expandable content (use accordion)",
+      "single non-tabbed content sections"
+    ]
+  },
+  "usage": {
+    "pagesUsing": ["/en"],
+    "reuseCount": 1,
+    "lastUsed": "2026-09-07T00:00:00.000Z"
+  }
+}
