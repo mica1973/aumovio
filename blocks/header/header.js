@@ -22,15 +22,19 @@ function applyImageSrc(img) {
   const raw = img.getAttribute('src');
   if (!raw || /^(https?:)?\/\//.test(raw)) return;
   const file = raw.replace(/^\/?(?:content\/)?images\//, '').replace(/^\//, '');
-  // Primary: root-absolute relative path (works on localhost and any preview
-  // host, resolving at any page depth). Fallback on load error: the AEM DAM
-  // path (used on the author/published AEM host). Host-agnostic — no hostname
-  // guessing, so it works everywhere the asset actually lives.
-  const primary = `/images/${file}`;
+  const relPath = `/images/${file}`;
   const damPath = `${AEM_ASSET_BASE}${file}`;
+  // On the AEM author host (Universal Editor) the assets are served from the
+  // DAM, and a missing /images/ request may not fire a clean error event — so
+  // use the DAM path up front there. Everywhere else (localhost, preview,
+  // published) use the root-absolute relative path. Either way, swap to the
+  // other candidate on load error so it self-heals regardless of host.
+  const onAem = /\.adobeaemcloud\.com$/.test(window.location.hostname);
+  const primary = onAem ? damPath : relPath;
+  const fallback = onAem ? relPath : damPath;
   img.addEventListener('error', function onErr() {
     img.removeEventListener('error', onErr);
-    if (img.getAttribute('src') !== damPath) img.setAttribute('src', damPath);
+    if (img.getAttribute('src') !== fallback) img.setAttribute('src', fallback);
   });
   img.setAttribute('src', primary);
 }
