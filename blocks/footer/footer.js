@@ -13,13 +13,19 @@ const AEM_ASSET_BASE = '/content/dam/aumovio/images/';
  * @param {string} src the raw src from the fragment
  * @returns {string}
  */
-function resolveImageSrc(src) {
-  if (!src) return src;
-  if (/^(https?:)?\/\//.test(src) || src.startsWith('/')) return src;
-  const file = src.replace(/^images\//, '');
-  const host = window.location.hostname;
-  const isLocal = host === 'localhost' || host === '127.0.0.1';
-  return isLocal ? `/${src}` : `${AEM_ASSET_BASE}${file}`;
+function applyImageSrc(img) {
+  const raw = img.getAttribute('src');
+  if (!raw || /^(https?:)?\/\//.test(raw)) return;
+  const file = raw.replace(/^\/?(?:content\/)?images\//, '').replace(/^\//, '');
+  // Primary: root-absolute relative path (works on localhost and any preview
+  // host at any page depth). Fallback on load error: the AEM DAM path.
+  const primary = `/images/${file}`;
+  const damPath = `${AEM_ASSET_BASE}${file}`;
+  img.addEventListener('error', function onErr() {
+    img.removeEventListener('error', onErr);
+    if (img.getAttribute('src') !== damPath) img.setAttribute('src', damPath);
+  });
+  img.setAttribute('src', primary);
 }
 
 /**
@@ -56,10 +62,8 @@ export default async function decorate(block) {
     footer.append(section);
   });
 
-  // Rewrite fragment image refs (logo/social icons) for the current host.
-  footer.querySelectorAll('img[src]').forEach((img) => {
-    img.setAttribute('src', resolveImageSrc(img.getAttribute('src')));
-  });
+  // Rewrite fragment image refs (social icons) for the current host.
+  footer.querySelectorAll('img[src]').forEach((img) => applyImageSrc(img));
 
   // Social row: label paragraph + icon list
   const social = footer.querySelector('.footer-social');

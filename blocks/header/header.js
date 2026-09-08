@@ -18,16 +18,21 @@ const AEM_ASSET_BASE = '/content/dam/aumovio/images/';
  * @param {string} src the raw src from the fragment
  * @returns {string}
  */
-function resolveImageSrc(src) {
-  if (!src) return src;
-  // Absolute or external — leave as-is.
-  if (/^(https?:)?\/\//.test(src) || src.startsWith('/')) return src;
-  const file = src.replace(/^images\//, '');
-  const host = window.location.hostname;
-  const isLocal = host === 'localhost' || host === '127.0.0.1';
-  // Local preview: root-absolute so it resolves at any page depth.
-  // AEM (author/publish): the uploaded DAM path.
-  return isLocal ? `/${src}` : `${AEM_ASSET_BASE}${file}`;
+function applyImageSrc(img) {
+  const raw = img.getAttribute('src');
+  if (!raw || /^(https?:)?\/\//.test(raw)) return;
+  const file = raw.replace(/^\/?(?:content\/)?images\//, '').replace(/^\//, '');
+  // Primary: root-absolute relative path (works on localhost and any preview
+  // host, resolving at any page depth). Fallback on load error: the AEM DAM
+  // path (used on the author/published AEM host). Host-agnostic — no hostname
+  // guessing, so it works everywhere the asset actually lives.
+  const primary = `/images/${file}`;
+  const damPath = `${AEM_ASSET_BASE}${file}`;
+  img.addEventListener('error', function onErr() {
+    img.removeEventListener('error', onErr);
+    if (img.getAttribute('src') !== damPath) img.setAttribute('src', damPath);
+  });
+  img.setAttribute('src', primary);
 }
 
 /**
@@ -252,8 +257,9 @@ export default async function decorate(block) {
   brandLink.setAttribute('aria-label', 'AUMOVIO - Homepage');
   if (logoImg) {
     const img = document.createElement('img');
-    img.src = resolveImageSrc(logoImg.getAttribute('src'));
     img.alt = logoImg.getAttribute('alt') || 'AUMOVIO';
+    img.setAttribute('src', logoImg.getAttribute('src'));
+    applyImageSrc(img);
     brandLink.append(img);
   }
   brand.append(brandLink);
