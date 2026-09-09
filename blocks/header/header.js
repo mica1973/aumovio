@@ -295,13 +295,13 @@ export default async function decorate(block) {
     // they resolve on every host (see logo handling).
     const langCode = (href) => (href || '').split('/').pop().split('.')[0].toLowerCase();
     const flagImg = (code) => {
-      const img = document.createElement('img');
-      img.className = 'nav-lang-flag';
-      img.src = `${window.hlx?.codeBasePath || ''}/icons/flag-${code}.svg`;
-      img.alt = '';
-      img.setAttribute('aria-hidden', 'true');
-      img.loading = 'lazy';
-      return img;
+      const flag = document.createElement('img');
+      flag.className = 'nav-lang-flag';
+      flag.src = `${window.hlx?.codeBasePath || ''}/icons/flag-${code}.svg`;
+      flag.alt = '';
+      flag.setAttribute('aria-hidden', 'true');
+      flag.loading = 'lazy';
+      return flag;
     };
     const langWrap = document.createElement('div');
     langWrap.className = 'nav-lang';
