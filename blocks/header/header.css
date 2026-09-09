@@ -275,6 +275,9 @@ header nav .nav-lang {
 }
 
 header nav .nav-lang-current {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   margin: 0;
   border: 1px solid #d0d0d0;
   border-radius: 2px;
@@ -285,6 +288,15 @@ header nav .nav-lang-current {
   font-weight: 700;
   color: #000;
   cursor: pointer;
+}
+
+header nav .nav-lang-flag {
+  width: 20px;
+  height: 14px;
+  object-fit: cover;
+  border-radius: 1px;
+  box-shadow: 0 0 0 1px rgba(0 0 0 / 10%);
+  flex: 0 0 auto;
 }
 
 header nav .nav-lang-list {
@@ -306,7 +318,9 @@ header nav .nav-lang.open .nav-lang-list {
 }
 
 header nav .nav-lang-list a {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 8px;
   padding: 8px 14px;
   font-size: 14px;
 }

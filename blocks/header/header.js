@@ -290,13 +290,27 @@ export default async function decorate(block) {
   // language switcher from fragment tools section (list of language links)
   const langLinks = toolsSection ? [...toolsSection.querySelectorAll('ul a')] : [];
   if (langLinks.length) {
+    // Derive a 2-letter language code from a link href (/en.html -> en) so we
+    // can show the matching flag. Flags are code-owned SVGs under /icons/ so
+    // they resolve on every host (see logo handling).
+    const langCode = (href) => (href || '').split('/').pop().split('.')[0].toLowerCase();
+    const flagImg = (code) => {
+      const img = document.createElement('img');
+      img.className = 'nav-lang-flag';
+      img.src = `${window.hlx?.codeBasePath || ''}/icons/flag-${code}.svg`;
+      img.alt = '';
+      img.setAttribute('aria-hidden', 'true');
+      img.loading = 'lazy';
+      return img;
+    };
     const langWrap = document.createElement('div');
     langWrap.className = 'nav-lang';
     const current = langLinks[0];
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'nav-lang-current';
-    btn.textContent = current.textContent.trim();
+    btn.append(flagImg(langCode(current.getAttribute('href'))));
+    btn.append(document.createTextNode(current.textContent.trim()));
     btn.setAttribute('aria-expanded', 'false');
     const list = document.createElement('ul');
     list.className = 'nav-lang-list';
@@ -304,7 +318,8 @@ export default async function decorate(block) {
       const li = document.createElement('li');
       const link = document.createElement('a');
       link.href = a.getAttribute('href');
-      link.textContent = a.textContent.trim();
+      link.append(flagImg(langCode(a.getAttribute('href'))));
+      link.append(document.createTextNode(a.textContent.trim()));
       li.append(link);
       list.append(li);
     });
