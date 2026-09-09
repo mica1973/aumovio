@@ -1,7 +1,6 @@
 {
   "mappings": [
     "/content/AUMOVIO/:/",
-    "/content/AUMOVIO/metadata:/metadata.json",
-    "/content/AUMOVIO/configuration:/.helix/config.json"
+    "/content/AUMOVIO/metadata:/metadata.json"
   ]
 }
